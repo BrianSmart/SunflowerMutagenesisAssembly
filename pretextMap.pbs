@@ -1,0 +1,16 @@
+#!/bin/bash
+#PBS -q bigmem
+#PBS -l select=1:ncpus=64:mem=250GB
+#PBS -l walltime=168:00:00
+#PBS -W group_list=x-ccast-prj-hulke
+#PBS -N ContactMatrixWithPretext
+
+
+cd /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiOmniCAssembly
+
+source /mmfs1/home/senta.kryzer/miniconda3/bin/activate pretextmap_env
+
+module load samtools 
+
+samtools view -h ./alignment/mapped_omnic.PT.bam | PretextMap -o map_omnic_pretext --sortby nosort --mapq 10
+

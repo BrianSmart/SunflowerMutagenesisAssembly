@@ -1,0 +1,44 @@
+#!/bin/bash
+#PBS -q bigmem
+#PBS -l select=1:ncpus=55:mem=290GB
+#PBS -l walltime=168:00:00
+#PBS -W group_list=x-ccast-prj-hulke
+#PBS -N Minimap2Mutagenesis
+#PBS -j oe
+
+# Load necessary modules (adjust as needed for your HPC)
+module load samtools
+
+# Set up working directory
+cd $PBS_O_WORKDIR
+
+# Define paths
+MINIMAP2="/mmfs1/home/brian.smart/projects/Software/minimap2-2.28_x64-linux/minimap2"
+REFERENCE="/mmfs1/home/brian.smart/projects/sunflower_reference_genomes/HA412HOv2_w_CPMT/Ha412HOv2_w_CPMT.fa"
+HAP1="/mmfs1/home/brian.smart/projects/MutagenesisSmart/HudsonAlpha/HifiParentalIlluminaOmniCAssembly/yahs_scaffolding_trio_hap1/yahs.out_scaffolds_final_hap1.fa"
+HAP2="/mmfs1/home/brian.smart/projects/MutagenesisSmart/HudsonAlpha/HifiParentalIlluminaOmniCAssembly/yahs_scaffolding_trio_hap2/yahs.out_scaffolds_final_hap2.fa"
+HIFI_OMNIC="/mmfs1/home/brian.smart/projects/MutagenesisSmart/HudsonAlpha/HifiOmniCAssembly/yahs_scaffolding/yahs.out_scaffolds_final.fa"
+
+# Function to run minimap2 and process output
+run_minimap2() {
+    local query=$1
+    local target=$2
+    local output_prefix=$3
+    
+    echo "Aligning $query to $target"
+    $MINIMAP2 -x asm20 -t 55 --eqx -Y -c -a $target $query | tee ${output_prefix}.paf |\
+    samtools view -bS - | samtools sort -@ 55 -O BAM -o ${output_prefix}.sorted.bam -
+    samtools index ${output_prefix}.sorted.bam
+}
+
+# Align each assembly to the reference
+run_minimap2 $HAP1 $REFERENCE "hap1_to_reference"
+run_minimap2 $HAP2 $REFERENCE "hap2_to_reference"
+run_minimap2 $HIFI_OMNIC $REFERENCE "hifi_omnic_to_reference"
+
+# Align assemblies to each other
+run_minimap2 $HAP1 $HAP2 "hap1_to_hap2"
+run_minimap2 $HAP1 $HIFI_OMNIC "hap1_to_hifi_omnic"
+run_minimap2 $HAP2 $HIFI_OMNIC "hap2_to_hifi_omnic"
+
+echo "All alignments completed"

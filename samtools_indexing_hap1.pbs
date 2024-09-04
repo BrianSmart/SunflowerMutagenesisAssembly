@@ -1,0 +1,22 @@
+#!/bin/bash
+#PBS -q condo05
+#PBS -l select=1:ncpus=32:mem=250GB
+#PBS -l walltime=168:00:00
+#PBS -W group_list=x-ccast-prj-hulke
+#PBS -N samtoolsFun
+
+cd /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiParentalIlluminaOmniCAssembly/pre_alignment_processing
+
+#1. indexing of the fasta haplotype contigs file 
+
+module load samtools
+
+#samtools faidx /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiParentalIlluminaOmniCAssembly/gfastats_trio/Sunflower_1_Hetero_Red_trioBinning.asm.dip.hap1.p_ctg.fasta
+
+
+#indexed file is saved in the folder where the fasta file is located
+
+#2. printing the first two columns into a new file and generating the genome file 
+
+cut -f1,2 Sunflower_1_Hetero_Red_trioBinning.asm.dip.hap1.p_ctg.fasta.fai > triobinning_hap1.genome
+

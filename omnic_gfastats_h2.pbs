@@ -1,0 +1,30 @@
+#!/bin/bash
+#PBS -q condo05
+#PBS -l select=1:ncpus=32:mem=250GB
+#PBS -l walltime=168:00:00
+#PBS -W group_list=x-ccast-prj-hulke
+#PBS -N gfastats_conversion
+
+# Define variables
+INPUT_GFA="/mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/hifiasm_omnic/Sunflower_1_Hetero_Red_withOmniC.asm.hic.hap2.p_ctg.gfa"
+OUTPUT_DIR="/mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/gfastats_output"
+OUTPUT_FASTA="${OUTPUT_DIR}/Sunflower_1_Hetero_Red_withOmniC_hap2_pcontig.fasta"
+GFASTATS_BIN="/mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/gfastats/build/bin/gfastats"
+
+# Check if gfastats binary exists
+if [ ! -x $GFASTATS_BIN ]; then
+    echo "Error: gfastats binary not found or not executable at $GFASTATS_BIN"
+    exit 1
+fi
+
+# Run gfastats to convert GFA to FASTA and generate statistics
+$GFASTATS_BIN $INPUT_GFA -o $OUTPUT_FASTA
+
+# Check if gfastats ran successfully
+if [ $? -ne 0 ]; then
+    echo "gfastats encountered an error."
+    exit 1
+fi
+
+echo "gfastats conversion completed successfully."
+

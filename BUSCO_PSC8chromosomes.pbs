@@ -1,0 +1,28 @@
+#!/bin/bash
+#PBS -q condo05
+#PBS -l select=1:ncpus=64:mem=500GB
+#PBS -l walltime=168:00:00
+#PBS -W group_list=x-ccast-prj-hulke
+#PBS -N BUSCO_PSC8chr
+
+# Load conda environment
+source /mmfs1/home/brian.smart/miniconda3/bin/activate busco
+
+#Load working directory
+cd /mmfs1/home/brian.smart/projects/MutagenesisSmart/HudsonAlpha/BUSCOvisual/BUSCO_chromosomesOnly
+
+#Run busco
+busco -i /mmfs1/home/brian.smart/projects/MutagenesisSmart/HudsonAlpha/BUSCOvisual/BUSCO_chromosomesOnly/PSC8_chromosomes.fasta \
+      -m genome \
+      -c 64 \
+      -l embryophyta_odb10 \
+      --offline \
+      -o BUSCO_PSC8chromosomes_embryophta_odb10
+
+#Run busco
+busco -i /mmfs1/home/brian.smart/projects/MutagenesisSmart/HudsonAlpha/BUSCOvisual/BUSCO_chromosomesOnly/PSC8_chromosomes.fasta \
+       -m genome \
+       -c 64 \
+       -l eudicots_odb10 \
+       --offline \
+       -o BUSCO_PSC8chromosomes_eudicots_odb10

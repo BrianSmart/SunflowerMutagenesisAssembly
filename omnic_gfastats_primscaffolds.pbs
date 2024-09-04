@@ -1,0 +1,12 @@
+#!/bin/bash
+#PBS -q condo05
+#PBS -l select=1:ncpus=32:mem=250GB
+#PBS -l walltime=168:00:00
+#PBS -W group_list=x-ccast-prj-hulke
+#PBS -N gfastats_conversion
+
+# Change directory
+cd /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiOmniCAssembly/hifiasm_omnic
+
+/mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/gfastats/build/bin/gfastats /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiOmniCAssembly/yahs_scaffolding/yahs.out_scaffolds_final.fa \
+                                                                                                       --threads 32

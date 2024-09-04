@@ -1,0 +1,13 @@
+#!/bin/bash
+#PBS -q condo05
+#PBS -l select=1:ncpus=32:mem=250GB
+#PBS -l walltime=168:00:00
+#PBS -W group_list=x-ccast-prj-hulke
+#PBS -N TidkSearchFun
+
+
+source /mmfs1/home/senta.kryzer/miniconda3/bin/activate tidk_env
+
+cd /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiOmniCAssembly/tidk_telomere_check
+
+tidk search --string TTTAGGG --dir /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiOmniCAssembly/tidk_telomere_check --output tidk_search --fasta yahs.out_scaffolds_final.fa 

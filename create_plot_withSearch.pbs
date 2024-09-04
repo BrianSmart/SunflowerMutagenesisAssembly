@@ -1,0 +1,13 @@
+#!/bin/bash
+#PBS -q condo05
+#PBS -l select=1:ncpus=32:mem=250GB
+#PBS -l walltime=168:00:00
+#PBS -W group_list=x-ccast-prj-hulke
+#PBS -N TidkCreatePlotFun
+
+
+source /mmfs1/home/senta.kryzer/miniconda3/bin/activate tidk_env
+
+cd /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiOmniCAssembly/tidk_telomere_check
+
+tidk plot --csv tidk_search_telomeric_repeat_windows.csv --output plot_telomere_search --height 120 --width 800

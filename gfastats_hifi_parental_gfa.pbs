@@ -1,0 +1,12 @@
+#!/bin/bash
+#PBS -q default
+#PBS -l select=1:ncpus=32:mem=128GB
+#PBS -l walltime=168:00:00
+#PBS -W group_list=x-ccast-prj-hulke
+#PBS -N gfastats
+
+cd /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiParentalIlluminaOmniCAssembly
+
+/mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/gfastats/build/bin/gfastats /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiParentalIlluminaOmniCAssembly/hifiasmTrioBinning/Sunflower_1_Hetero_Red_trioBinning.asm.dip.hap1.p_ctg.gfa --threads 16 -o ./Sunflower_1_Hetero_Red_trioBinning.asm.dip.hap1.p_ctg.fasta --discover-paths &
+
+/mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/gfastats/build/bin/gfastats /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiParentalIlluminaOmniCAssembly/hifiasmTrioBinning/Sunflower_1_Hetero_Red_trioBinning.asm.dip.hap2.p_ctg.gfa --threads 16 -o ./Sunflower_1_Hetero_Red_trioBinning.asm.dip.hap2.p_ctg.fasta --discover-paths

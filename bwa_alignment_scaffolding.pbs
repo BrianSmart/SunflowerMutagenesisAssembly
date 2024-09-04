@@ -1,0 +1,63 @@
+#!/bin/bash
+#PBS -q bigmem
+#PBS -l select=1:ncpus=64:mem=500GB
+#PBS -l walltime=168:00:00
+#PBS -W group_list=x-ccast-prj-hulke
+#PBS -N bwaAlignmentScaffoldingFun
+
+cd /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha
+
+source /mmfs1/home/senta.kryzer/miniconda3/bin/activate pairtools_env
+
+#module load samtools 
+
+
+
+########################Alignment step by step###############################
+
+#1. Actual alignment 
+
+#/mmfs1/projects/brent.hulke/Software/bwa-mem2/bwa-mem2 index ./HifiOmniCAssembly/alignment_scaffolding/yahs.out_scaffolds_final.fa
+
+#/mmfs1/projects/brent.hulke/Software/bwa-mem2/bwa-mem2 mem -5SP \
+#                                                           -T0 \
+#                                                           -t64 \
+#                                                           ./HifiOmniCAssembly/alignment_scaffolding/yahs.out_scaffolds_final.fa \
+#                                                           LAID_OmniC_NA_NA_TTCCAAGG_Sunflower_Hetero_Red-Sunflower_OmniC_I1381_L1_R1.fastq.gz LAID_OmniC_NA_NA_TTCCAAGG_Sunflower_Hetero_Red-Sunflower_OmniC_I1381_L1_R2.fastq.gz \
+                                                           -o ./HifiOmniCAssembly/alignment_scaffolding/aligned_omnic_scaffolding.sam
+#took about 3 hours
+
+#2. Finding ligation junctions - Parsing step 
+#pairtools parse --min-mapq 40 \
+#                --walks-policy 5unique \
+#                --max-inter-align-gap 30 \
+#                --nproc-in 32 --nproc-out 32 \
+#                --chroms-path ./HifiOmniCAssembly/alignment_scaffolding/scaffolding.genome ./HifiOmniCAssembly/alignment_scaffolding/aligned_omnic_scaffolding.sam > ./HifiOmniCAssembly/alignment_scaffolding/parsed_omnic_scaffolding.pairsam
+# took about 6 hours
+
+
+#3. Sort the parsed pairs 
+#pairtools sort --tmpdir=/mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiOmniCAssembly/alignment_scaffolding/temp_folder_scaffolding \
+#               --nproc 64 \
+#               ./HifiOmniCAssembly/alignment_scaffolding/parsed_omnic_scaffolding.pairsam > ./HifiOmniCAssembly/alignment_scaffolding/sorted_omnic_scaffolding.pairsam 
+#took about 3 1/2 hours 
+   
+   
+#4.Mark duplicates 
+#pairtools dedup --nproc-in 32 --nproc-out 32 --mark-dups --output-stats ./HifiOmniCAssembly/alignment_scaffolding/stats.txt \
+#                --output ./HifiOmniCAssembly/alignment_scaffolding/dedup_scaffolding.pairsam ./HifiOmniCAssembly/alignment_scaffolding/sorted_omnic_scaffolding.pairsam
+#took a few minutes
+
+#5. Split pairsam into two files 
+#pairtools split  --nproc-in 32 --nproc-out 32 --output-pairs ./HifiOmniCAssembly/alignment_scaffolding/mapped_omnic_scaffolding.pairs \
+#                 --output-sam ./HifiOmniCAssembly/alignment_scaffolding/unsorted_omnic_scaffolding.bam ./HifiOmniCAssembly/alignment_scaffolding/dedup_scaffolding.pairsam
+#took a few minutes
+
+#6. Generating the final bam file 
+#samtools sort -@64 -T/mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiOmniCAssembly/alignment_scaffolding/temp_folder_scaffolding/temp_scaffolding.bam \
+#              -o ./HifiOmniCAssembly/alignment_scaffolding/mapped_omnic_scaffolding.PT.bam ./HifiOmniCAssembly/alignment_scaffolding/unsorted_omnic_scaffolding.bam
+#took a few minutes 
+
+#7. Indexing of bam file 
+samtools index ./HifiOmniCAssembly/alignment_scaffolding/mapped_omnic_scaffolding.PT.bam
+

@@ -1,0 +1,48 @@
+#!/bin/bash
+#PBS -q condo05
+#PBS -l select=1:ncpus=24:mem=200GB
+#PBS -l walltime=168:00:00
+#PBS -W group_list=x-ccast-prj-hulke
+#PBS -N tblastn_hap2
+#PBS -j oe
+
+# Set the working directory
+cd /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/ChrLabels17Scaffs3Assemblies
+
+# Define the tblastn and makeblastdb executables
+TBLASTN="/mmfs1/projects/brent.hulke/Software/ncbi-blast-2.16.0+/bin/tblastn"
+MAKEBLASTDB="/mmfs1/projects/brent.hulke/Software/ncbi-blast-2.16.0+/bin/makeblastdb"
+
+# Define genome assembly
+GENOME="Hap2_TrioChromosomes_10Mb_17seqs_ChromosomeLabels_sorted.fa"
+
+# Define protein files
+PROTEINS=(
+    "F3H.fa"
+    "myb.fa"
+    "FLS.fa"
+    "CHI.fa"
+    "DFR.fa"
+    "ANS.fa"
+    "CHS.fa"
+)
+
+# Create output directory
+mkdir -p tblastn_results/hap2
+
+# Create BLAST database for the genome
+$MAKEBLASTDB -in "$GENOME" -dbtype nucl -out "${GENOME%.*}_db"
+
+# Loop through each protein file
+for protein in "${PROTEINS[@]}"; do
+    output_file="tblastn_results/hap2/${protein%.*}_vs_${GENOME%.*}.out"
+    
+    # Run tblastn
+    $TBLASTN -query "$protein" -db "${GENOME%.*}_db" -out "$output_file" \
+             -num_threads 24 \
+             -outfmt 6
+    
+    echo "Completed tblastn search: $protein vs $GENOME"
+done
+
+echo "All tblastn searches completed for Hap2 assembly."

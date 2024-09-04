@@ -1,0 +1,10 @@
+#!/bin/bash
+#PBS -q condo05
+#PBS -l select=1:ncpus=32:mem=250GB
+#PBS -l walltime=168:00:00
+#PBS -W group_list=x-ccast-prj-hulke
+#PBS -N bwaIndexing
+
+cd /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiParentalIlluminaOmniCAssembly/alignment_triobinning
+
+/mmfs1/projects/brent.hulke/Software/bwa-mem2/bwa-mem2 index Sunflower_1_Hetero_Red_trioBinning.asm.dip.hap1.p_ctg.fasta

@@ -1,0 +1,13 @@
+#!/bin/bash
+#PBS -q condo05
+#PBS -l select=1:ncpus=32:mem=250GB
+#PBS -l walltime=168:00:00
+#PBS -W group_list=x-ccast-prj-hulke
+#PBS -N createBuscoPlot
+
+
+#Load conda environment 
+source /mmfs1/home/senta.kryzer/miniconda3/bin/activate busco_env
+
+#run busco python script to generate the graph 
+python3 /mmfs1/home/senta.kryzer/miniconda3/envs/busco_env/bin/generate_plot.py -wd /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiOmniCAssembly/busco_haplotypes/eudicots_hap2_odb10

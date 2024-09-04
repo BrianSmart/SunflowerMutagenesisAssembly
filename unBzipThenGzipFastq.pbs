@@ -1,0 +1,24 @@
+#!/bin/bash
+#PBS -q condo05
+#PBS -l select=1:ncpus=64:mem=250GB
+#PBS -l walltime=168:00:00
+#PBS -W group_list=x-ccast-prj-hulke
+
+cd /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha
+
+# Define an array of your .bz2 files
+files=(
+    "KYEN_PCRfree_1_1_CAGTAGGC_Sunflower_2_Homo_Red_I1373L2_L2_R1.fastq.bz2"
+    "KYEN_PCRfree_1_1_CAGTAGGC_Sunflower_2_Homo_Red_I1373L2_L2_R2.fastq.bz2"
+    "KYEP_PCRfree_1_1_TGACGAAT_Sunflower_3_Homo_Green_I1373L2_L2_R1.fastq.bz2"
+    "KYEP_PCRfree_1_1_TGACGAAT_Sunflower_3_Homo_Green_I1373L2_L2_R2.fastq.bz2"
+)
+
+# Loop through each file and process in the background
+for file in "${files[@]}"; do
+    (bzip2 -dc "$file" | gzip > "${file%.bz2}.gz" && echo "Successfully processed $file") &
+done
+
+# Wait for all background jobs to finish
+wait
+

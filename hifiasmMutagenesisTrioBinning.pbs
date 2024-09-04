@@ -1,0 +1,10 @@
+#!/bin/bash
+#PBS -q bigmem
+#PBS -l select=1:ncpus=128:mem=1000GB
+#PBS -l walltime=168:00:00
+#PBS -W group_list=x-ccast-prj-hulke
+#PBS -N HifiasmMutagenesisSunflowerAssemblyTrioBinning
+
+cd /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiParentalIlluminaOmniCAssembly
+
+/mmfs1/projects/brent.hulke/Software/hifiasm/hifiasm -o Sunflower_1_Hetero_Red_trioBinning.asm -t 128 -1 Sunflower_2_Homo_Red.yak -2 Sunflower_3_Homo_Green.yak ../MutagenesisPacBioLongReadsMerged.fastq.gz > hifiasmTrioBinningMutagenesis_log.txt 2>&1

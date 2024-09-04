@@ -1,0 +1,22 @@
+#!/bin/bash
+#PBS -q condo05
+#PBS -l select=1:ncpus=64:mem=500GB
+#PBS -l walltime=168:00:00
+#PBS -W group_list=x-ccast-prj-hulke
+#PBS -N samtoolsFun
+
+cd /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiOmniCAssembly/pre_alignment_scaffolding
+
+#1. indexing of the fasta scaffolding file 
+
+module load samtools
+
+#samtools faidx /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiOmniCAssembly/yahs_scaffolding/yahs.out_scaffolds_final.fa
+
+
+#indexed file is saved in the folder where the fasta file is located
+
+#2. printing the first two columns into a new file and generating the genome file 
+
+cut -f1,2 yahs.out_scaffolds_final.fa.fai > scaffolding.genome
+

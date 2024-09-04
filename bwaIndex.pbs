@@ -1,0 +1,11 @@
+#!/bin/bash
+#PBS -q default
+#PBS -l select=1:ncpus=4:mem=128GB
+#PBS -l walltime=168:00:00
+#PBS -W group_list=x-ccast-prj-hulke
+#PBS -N bwaMem2_OmniC
+
+# Set directory
+cd /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiParentalIlluminaOmniCAssembly/preprocessingOmniC
+
+/mmfs1/projects/brent.hulke/Software/bwa-mem2/bwa-mem2 index /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiParentalIlluminaOmniCAssembly/gfastats_trio/Sunflower_1_Hetero_Red_trioBinning.asm.dip.p_utg.fasta

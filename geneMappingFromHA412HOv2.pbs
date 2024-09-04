@@ -1,0 +1,60 @@
+#!/bin/bash
+#PBS -q condo05
+#PBS -l select=1:ncpus=56:mem=374GB
+#PBS -l walltime=168:00:00
+#PBS -W group_list=x-ccast-prj-hulke
+#PBS -N GeneMappingFromExistingAlignments
+#PBS -j oe
+
+set -e
+set -x
+
+# Load required modules
+module load bcftools/1.20
+module load samtools/1.20
+module load bedtools/2.30.0
+module load gffread/0.12.7
+
+# Set working directory
+cd /mmfs1/home/brian.smart/projects/MutagenesisSmart/HudsonAlpha/SyntenyOfAssemblies
+
+# Define input files
+REF="/mmfs1/home/brian.smart/projects/MutagenesisSmart/HudsonAlpha/SyntenyOfAssemblies/Ha412HOv2_w_CPMT_trimmed_10Mb_17seqs_singleline.fa"
+REF_GFF3="/mmfs1/home/brian.smart/projects/sunflower_reference_genomes/HA412HOv2_w_CPMT/Ha412HOv2_w_CPMT.Eugene_curated_v1_1.gff3"
+HAP1="/mmfs1/home/brian.smart/projects/MutagenesisSmart/HudsonAlpha/SyntenyOfAssemblies/Hap1_TrioScaffolds_10Mb_6seqs_singleline.fa"
+HAP2="/mmfs1/home/brian.smart/projects/MutagenesisSmart/HudsonAlpha/SyntenyOfAssemblies/Hap2_TrioScaffolds_10Mb_17seqs_singleline.fa"
+
+# Convert GFF3 to BED
+gffread $REF_GFF3 -E -o - | awk '$3=="gene"' | bedtools bed12tobed6 > ref_genes.bed
+
+# Transfer annotations to Hap1
+bcftools mpileup -Ou -f $HAP1 RedParent_hap1.sorted.bam GreenParent_hap1.sorted.bam | bcftools call -mv -Oz -o hap1_variants.vcf.gz
+bcftools index hap1_variants.vcf.gz
+bcftools consensus -f $REF hap1_variants.vcf.gz > hap1_consensus.fa
+minimap2 -ax asm5 -t 56 $REF hap1_consensus.fa > hap1_to_ref.sam
+samtools view -bS hap1_to_ref.sam | samtools sort -o hap1_to_ref.bam
+samtools index hap1_to_ref.bam
+bedtools bamtobed -i hap1_to_ref.bam > hap1_to_ref.bed
+bedtools map -a ref_genes.bed -b hap1_to_ref.bed -c 1 -o count > hap1_mapped_genes.bed
+awk '$7==1' hap1_mapped_genes.bed > hap1_unique_mapped_genes.bed
+awk -v OFS="\t" '{print $1, "lifted_annotation", "gene", $2, $3, ".", $6, ".", "ID="$4}' hap1_unique_mapped_genes.bed > hap1_lifted_genes.gff3
+
+# Transfer annotations to Hap2
+bcftools mpileup -Ou -f $HAP2 RedParent_hap2.sorted.bam GreenParent_hap2.sorted.bam | bcftools call -mv -Oz -o hap2_variants.vcf.gz
+bcftools index hap2_variants.vcf.gz
+bcftools consensus -f $REF hap2_variants.vcf.gz > hap2_consensus.fa
+minimap2 -ax asm5 -t 56 $REF hap2_consensus.fa > hap2_to_ref.sam
+samtools view -bS hap2_to_ref.sam | samtools sort -o hap2_to_ref.bam
+samtools index hap2_to_ref.bam
+bedtools bamtobed -i hap2_to_ref.bam > hap2_to_ref.bed
+bedtools map -a ref_genes.bed -b hap2_to_ref.bed -c 1 -o count > hap2_mapped_genes.bed
+awk '$7==1' hap2_mapped_genes.bed > hap2_unique_mapped_genes.bed
+awk -v OFS="\t" '{print $1, "lifted_annotation", "gene", $2, $3, ".", $6, ".", "ID="$4}' hap2_unique_mapped_genes.bed > hap2_lifted_genes.gff3
+
+# Generate summary statistics
+echo "Number of genes mapped to Hap1:"
+wc -l hap1_lifted_genes.gff3
+echo "Number of genes mapped to Hap2:"
+wc -l hap2_lifted_genes.gff3
+
+echo "Gene mapping complete. Please review the lifted GFF3 files and summary statistics."

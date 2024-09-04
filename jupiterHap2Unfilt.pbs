@@ -1,0 +1,33 @@
+#!/bin/bash
+#PBS -q beta
+#PBS -l select=1:ncpus=20:mem=750GB
+#PBS -l walltime=168:00:00
+#PBS -W group_list=x-ccast-prj-hulke
+#PBS -N JupiterHap2Unfilt
+#PBS -j oe
+
+set -e
+set -x
+
+# Load necessary modules
+module load samtools
+module load perl/5.32.0-gcc-vswq
+
+# Activate the conda environment
+source ~/miniconda3/etc/profile.d/conda.sh
+conda activate base
+
+# Set up environment variables
+export PATH="/mmfs1/home/brian.smart/projects/Software/minimap2-2.28_x64-linux:$PATH"
+export PKG_CONFIG_PATH=~/local/lib/pkgconfig:$PKG_CONFIG_PATH
+export LD_LIBRARY_PATH=~/local/lib:$LD_LIBRARY_PATH
+export PERL5LIB="/mmfs1/home/brian.smart/perl5/lib/perl5:$PERL5LIB"
+
+# Change to the working directory
+cd /mmfs1/home/brian.smart/projects/MutagenesisSmart/HudsonAlpha/SyntenyOfAssemblies
+
+# Run jupiterplot
+jupiter name=TrioHap2Unfilt ref=Ha412HOv2_w_CPMT.fa fa=Hap2_TrioScaffolds_unfiltered.fa t=20 m=0 ng=0 maxScaff=-1 labels=both
+
+# You can adjust the parameters as needed. For example:
+# jupiter name=myproject ref=reference.fasta fa=scaffolds.fasta t=4 ng=75 m=100000 maxGap=100000 minBundleSize=50000 MAPQ=50

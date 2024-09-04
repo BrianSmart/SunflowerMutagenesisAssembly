@@ -1,0 +1,13 @@
+#!/bin/bash
+#PBS -q default
+#PBS -l select=1:ncpus=2:mem=250GB
+#PBS -l walltime=168:00:00
+#PBS -W group_list=x-ccast-prj-hulke
+
+cd /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/rawdata
+
+bzip2 -dkc LAID_OmniC_NA_NA_TTCCAAGG_Sunflower_Hetero_Red-Sunflower_OmniC_I1381_L1_R1.fastq.bz2 | gzip > ../LAID_OmniC_NA_NA_TTCCAAGG_Sunflower_Hetero_Red-Sunflower_OmniC_I1381_L1_R1.fastq.gz &
+bzip2 -dkc LAID_OmniC_NA_NA_TTCCAAGG_Sunflower_Hetero_Red-Sunflower_OmniC_I1381_L1_R2.fastq.bz2 | gzip > ../LAID_OmniC_NA_NA_TTCCAAGG_Sunflower_Hetero_Red-Sunflower_OmniC_I1381_L1_R2.fastq.gz &
+
+#wait for background processes to run
+wait

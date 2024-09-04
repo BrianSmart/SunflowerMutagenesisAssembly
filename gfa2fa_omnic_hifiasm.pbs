@@ -1,0 +1,42 @@
+#!/bin/bash
+#PBS -q condo05
+#PBS -l select=1:ncpus=32:mem=250GB
+#PBS -l walltime=168:00:00
+#PBS -W group_list=x-ccast-prj-hulke
+#PBS -N gfatools_conversion
+
+# Source .bashrc if needed, ensuring no errors if brew isn't found
+if [ -f ~/.bashrc ]; then
+    source ~/.bashrc || true
+fi
+
+# Define variables
+INPUT_DIR="/mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/hifiasm_omnic"
+OUTPUT_DIR="/mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/gfatools_omnic"
+
+# List of specific GFA files to convert
+GFA_FILES=(
+    "Sunflower_1_Hetero_Red_withOmniC.asm.hic.hap1.p_ctg.gfa"
+    "Sunflower_1_Hetero_Red_withOmniC.asm.hic.hap2.p_ctg.gfa"
+    "Sunflower_1_Hetero_Red_withOmniC.asm.hic.p_ctg.gfa"
+)
+
+# Loop through each specified GFA file
+for FILE in "${GFA_FILES[@]}"; do
+    INPUT_GFA="${INPUT_DIR}/${FILE}"
+    BASENAME=$(basename ${INPUT_GFA} .gfa)
+    OUTPUT_FASTA="${OUTPUT_DIR}/${BASENAME}.fasta"
+
+    # Convert GFA to FASTA
+    /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/gfatools_omnic/gfatools/gfatools gfa2fa $INPUT_GFA > $OUTPUT_FASTA
+
+    # Check if gfatools ran successfully for this file
+    if [ $? -ne 0 ]; then
+        echo "gfatools encountered an error processing ${INPUT_GFA}."
+        exit 1
+    fi
+
+    echo "gfatools conversion for ${INPUT_GFA} completed successfully."
+done
+
+

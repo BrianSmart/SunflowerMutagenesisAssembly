@@ -1,0 +1,15 @@
+#!/bin/bash
+#PBS -q beta
+#PBS -l select=1:ncpus=36:mem=1509GB
+#PBS -l walltime=168:00:00
+#PBS -W group_list=x-ccast-prj-hulke
+#PBS -N HifiasmMutagenesisSunflowerAssembly
+
+cd /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha
+
+/mmfs1/projects/brent.hulke/Software/hifiasm/hifiasm -o Sunflower_1_Hetero_Red_withOmniC.asm \
+                                                     -t 36 \
+                                                     --h1 LAID_OmniC_NA_NA_TTCCAAGG_Sunflower_Hetero_Red-Sunflower_OmniC_I1381_L1_R1.fastq.gz \ 
+                                                     --h2 LAID_OmniC_NA_NA_TTCCAAGG_Sunflower_Hetero_Red-Sunflower_OmniC_I1381_L1_R2.fastq.gz \ 
+                                                     /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/MutagenesisPacBioLongReadsMerged.fastq.gz \
+                                                     > ./hifiasm_omnic/hifiasmMutagenesis_omnic_log.txt 2>&1

@@ -1,0 +1,11 @@
+#!/bin/bash
+#PBS -q default
+#PBS -l select=1:ncpus=32:mem=250GB
+#PBS -l walltime=168:00:00
+#PBS -W group_list=x-ccast-prj-hulke
+
+
+cd /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/hifiasm_omnic
+
+/mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/gfastats/build/bin/gfastats  Sunflower_1_Hetero_Red_withOmniC.asm.hic.hap1.p_ctg.gfa \
+                                                                                      -o fa

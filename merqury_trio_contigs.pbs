@@ -1,0 +1,24 @@
+#!/bin/bash
+#PBS -q condo05
+#PBS -l select=1:ncpus=64:mem=502GB
+#PBS -l walltime=168:00:00
+#PBS -W group_list=x-ccast-prj-hulke
+#PBS -N funTimesWithMerqury
+
+# Load modules
+module load samtools/1.20
+module load r/4.4.0
+module load bedtools/2.30.0
+
+# Set directory
+cd /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiParentalIlluminaOmniCAssembly/merqury_trio
+
+export MERQURY=/mmfs1/projects/brent.hulke/Software/merqury
+export PATH="/mmfs1/projects/brent.hulke/Software/meryl-1.4.1/bin:$PATH"
+
+$MERQURY/merqury.sh /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/hifi_kmers_k21.meryl \
+    HomoGreen.meryl \
+    HomoRed.meryl \
+    Sunflower_1_Hetero_Red_trioBinning.asm.dip.hap1.p_ctg.fasta \
+    Sunflower_1_Hetero_Red_trioBinning.asm.dip.hap2.p_ctg.fasta \
+    TrioBinningContigsMerqury

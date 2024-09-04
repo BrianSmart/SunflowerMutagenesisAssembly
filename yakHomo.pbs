@@ -1,0 +1,17 @@
+#!/bin/bash
+#PBS -q condo05
+#PBS -l select=1:ncpus=64:mem=250GB
+#PBS -l walltime=168:00:00
+#PBS -W group_list=x-ccast-prj-hulke
+
+cd /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha
+
+# Run yak on the two homozygous red fastq files (PCRfree, Illumina short reads)
+# Output: HomoRed.yak, HomoRedYak_log.txt
+/mmfs1/home/brian.smart/software/yak/yak count -k31 -b37 -t32 -o Sunflower_2_Homo_Red.yak Sunflower_2_Homo_Red_R1_fastp.fastq.gz Sunflower_2_Homo_Red_R2_fastp.fastq.gz > Sunflower_2_Homo_Red_yakLog.txt 2>&1 &
+
+# Run yak on the two homozygous green fastq files (PCRfree, Illumina short reads)
+# Output: HomoGreen.yak, HomoGreenYak_log.txt
+/mmfs1/home/brian.smart/software/yak/yak count -k31 -b37 -t32 -o Sunflower_3_Homo_Green.yak Sunflower_3_Homo_Green_R1_fastp.fastq.gz Sunflower_3_Homo_Green_R2_fastp.fastq.gz > Sunflower_3_Homo_Green_yakLog.txt 2>&1
+
+wait

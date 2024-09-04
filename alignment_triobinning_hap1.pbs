@@ -1,0 +1,70 @@
+#!/bin/bash
+#PBS -q bigmem
+#PBS -l select=1:ncpus=32:mem=128GB
+#PBS -l walltime=168:00:00
+#PBS -W group_list=x-ccast-prj-hulke
+#PBS -N bwaAlignmentFun
+
+cd /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha
+
+source /mmfs1/home/senta.kryzer/miniconda3/bin/activate pairtools_env
+
+module load samtools 
+
+
+
+#/mmfs1/projects/brent.hulke/Software/bwa-mem2/bwa-mem2 mem -5SP -T0 -t64 ./HifiOmniCAssembly/alignment/Sunflower_1_Hetero_Red_withOmniC.asm.hic.p_ctg.fasta LAID_OmniC_NA_NA_TTCCAAGG_Sunflower_Hetero_Red-Sunflower_OmniC_I1381_L1_R1.fastq.gz LAID_OmniC_NA_NA_TTCCAAGG_Sunflower_Hetero_Red-Sunflower_OmniC_I1381_L1_R2.fastq.gz| \
+#pairtools parse --min-mapq 40 --walks-policy 5unique --max-inter-align-gap 30 --nproc-in 32 --nproc-out 32 --chroms-path ./HifiOmniCAssembly/alignment/Sunflower_1_Hetero_Red_withOmniC_genome | \
+#pairtools sort --tmpdir=/mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiOmniCAssembly/alignment/temp_folder --nproc 64|pairtools dedup --nproc-in 32 \
+#--nproc-out 32 --mark-dups --output-stats ./HifiOmniCAssembly/alignment/stats.txt \
+#--output /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiOmniCAssembly/alignment/dedup.pairsam /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiOmniCAssembly/alignment/sorted.pairsam \
+#|pairtools split --nproc-in 32 --nproc-out 32 --output-pairs /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiOmniCAssembly/alignment/mapped.pairs \
+#--output-sam -|samtools view -bS -@64 -o /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiOmniCAssembly/alignment/temp_folder/temp.bam| \
+#samtools sort -@64 -T /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiOmniCAssembly/alignment/temp_folder/temp.bam -o mapped.PT.bam unsorted.bam;samtools index mapped.PT.bam
+
+########################Alignment step by step###############################
+
+#1. Actual alignment 
+
+#/mmfs1/projects/brent.hulke/Software/bwa-mem2/bwa-mem2 mem -5SP \                                                           
+#                                                           -T0 \
+#                                                           -t64 \
+#                                                           ./HifiParentalIlluminaOmniCAssembly/alignment_triobinning/Sunflower_1_Hetero_Red_trioBinning.asm.dip.hap1.p_ctg.fasta \
+#                                                           LAID_OmniC_NA_NA_TTCCAAGG_Sunflower_Hetero_Red-Sunflower_OmniC_I1381_L1_R1.fastq.gz LAID_OmniC_NA_NA_TTCCAAGG_Sunflower_Hetero_Red-Sunflower_OmniC_I1381_L1_R2.fastq.gz \
+#                                                           -o ./HifiParentalIlluminaOmniCAssembly/alignment_triobinning/triobinning_aligned_hap1.sam
+#took about 3 hours
+
+#2. Finding ligation junctions - Parsing step 
+#pairtools parse --min-mapq 40 \
+#                --walks-policy 5unique \
+#                --max-inter-align-gap 30 \
+#                --nproc-in 32 --nproc-out 32 \
+#                --chroms-path ./HifiParentalIlluminaOmniCAssembly/alignment_triobinning/triobinning_hap1.genome ./HifiParentalIlluminaOmniCAssembly/alignment_triobinning/triobinning_aligned_hap1.sam > ./HifiParentalIlluminaOmniCAssembly/alignment_triobinning/parsed_trio_hap1.pairsam
+# took about 6 hours
+
+
+#3. Sort the parsed pairs 
+#pairtools sort --tmpdir=/mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiParentalIlluminaOmniCAssembly/alignment_triobinning/temp_folder_hap1 \
+#               --nproc 64 \
+#               ./HifiParentalIlluminaOmniCAssembly/alignment_triobinning/parsed_trio_hap1.pairsam > ./HifiParentalIlluminaOmniCAssembly/alignment_triobinning/sorted_trio_hap1.pairsam 
+#took about 3 1/2 hours 
+   
+   
+#4.Mark duplicates 
+#pairtools dedup --nproc-in 32 --nproc-out 32 --mark-dups --output-stats ./HifiParentalIlluminaOmniCAssembly/alignment_triobinning/stats_trio_hap1.txt \
+#                --output ./HifiParentalIlluminaOmniCAssembly/alignment_triobinning/dedup_trio_hap1.pairsam ./HifiParentalIlluminaOmniCAssembly/alignment_triobinning/sorted_trio_hap1.pairsam
+#took a few minutes
+
+#5. Split pairsam into two files 
+#airtools split  --nproc-in 32 --nproc-out 32 --output-pairs ./HifiParentalIlluminaOmniCAssembly/alignment_triobinning/mapped_trio_hap1.pairs \
+#                 --output-sam ./HifiParentalIlluminaOmniCAssembly/alignment_triobinning/unsorted_trio_hap1.bam ./HifiParentalIlluminaOmniCAssembly/alignment_triobinning/dedup_trio_hap1.pairsam
+#took a few minutes
+
+#6. Generating the final bam file 
+#samtools sort -@64 -T/mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiParentalIlluminaOmniCAssembly/alignment_triobinning/temp_folder_hap1/temp_hap1.bam \
+#              -o ./HifiParentalIlluminaOmniCAssembly/alignment_triobinning/mapped_trio_hap1.PT.bam ./HifiParentalIlluminaOmniCAssembly/alignment_triobinning/unsorted_trio_hap1.bam
+#took a few minutes 
+
+#7. Indexing of bam file 
+samtools index ./HifiParentalIlluminaOmniCAssembly/alignment_triobinning/mapped_trio_hap1.PT.bam
+

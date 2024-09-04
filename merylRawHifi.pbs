@@ -1,0 +1,12 @@
+#!/bin/bash
+#PBS -q condo05
+#PBS -l select=1:ncpus=29:mem=400GB
+#PBS -l walltime=168:00:00
+#PBS -W group_list=x-ccast-prj-hulke
+#PBS -N MerylRawHifi
+
+cd /mmfs1/home/brian.smart/projects/MutagenesisSmart/HudsonAlpha/
+
+/mmfs1/projects/brent.hulke/Software/meryl-1.4.1/bin/meryl count k=21 threads=29 memory=400 output hifi_kmers_k21.meryl MutagenesisPacBioLongReadsMerged.fastq.gz
+# VGP Galaxy Pipeline said "We used 31 as k-mer size, as this length has demonstrated to be sufficiently long that most k-mers are not repetitive and is short enough to be more robust to sequencing errors. For very large (haploid size > 10 Gb) and/or very repetitive genomes, larger k-mer length is recommended to increase the number of unique k-mers."
+

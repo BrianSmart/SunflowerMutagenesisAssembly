@@ -1,0 +1,12 @@
+#!/bin/bash
+#PBS -q bigmem
+#PBS -l select=1:ncpus=64:mem=500GB
+#PBS -l walltime=168:00:00
+#PBS -W group_list=x-ccast-prj-hulke
+#PBS -N TrioScaffoldingFunHap1
+
+
+cd /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiParentalIlluminaOmniCAssembly/yahs_scaffolding_trio  
+
+/mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiOmniCAssembly/yahs_scaffolding/yahs/yahs Sunflower_1_Hetero_Red_trioBinning.asm.dip.hap2.p_ctg.fasta \
+                                                                                                      mapped_trio_hap2.PT.bam 

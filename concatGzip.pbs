@@ -1,0 +1,15 @@
+#!/bin/bash
+
+#PBS -q default
+#PBS -l select=1:ncpus=4:mem=64GB
+#PBS -l walltime=24:00:00
+#PBS -W group_list=x-ccast-prj-hulke
+
+# Set directory
+cd /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiParentalIlluminaOmniCAssembly/fastp_parental
+
+# Concat and gzip Homo Red
+zcat Sunflower_2_Homo_Red_R1_fastp.fastq.gz Sunflower_2_Homo_Red_R2_fastp.fastq.gz | gzip > ../merqury_trio/Sunflower_2_Homo_Red_R12Concat_fastp.fastq &
+
+# Concat and gzip Homo Green
+zcat Sunflower_3_Homo_Green_R1_fastp.fastq.gz Sunflower_3_Homo_Green_R2_fastp.fastq.gz | gzip > ../merqury_trio/Sunflower_3_Homo_Green_R12Concat_fastp.fastq

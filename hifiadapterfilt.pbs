@@ -1,0 +1,10 @@
+#!/bin/bash
+#PBS -q condo05
+#PBS -l select=1:ncpus=32:mem=250GB
+#PBS -l walltime=168:00:00
+#PBS -W group_list=x-ccast-prj-hulke
+#PBS -N HifiAdapterFilt
+
+cd /mmfs1/home/brian.smart/projects/MutagenesisSmart/HudsonAlpha/
+
+bash hifiadapterfilt.sh -p MutagenesisPacBioLongReadsMerged -t 32

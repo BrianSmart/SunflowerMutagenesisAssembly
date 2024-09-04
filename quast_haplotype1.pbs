@@ -1,0 +1,15 @@
+#!/bin/bash
+#PBS -q condo05
+#PBS -l select=1:ncpus=32:mem=250GB
+#PBS -l walltime=168:00:00
+#PBS -W group_list=x-ccast-prj-hulke
+
+####################################################### quast running to proof quality of hifiasm data ###########################################################
+
+cd /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha
+
+/mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/quast-5.2.0/quast.py Sunflower_1_Hetero_Red_haplotype1Contigs.fasta \
+                                                                              -r /mmfs1/projects/brent.hulke/HA412HOv2_w_CPMT/Ha412HOv2_w_CPMT.fa
+                                                                              --fragmented
+                                                                              --min-identity 80.0
+                                                                              -o cd /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/quast_output/haplotype1

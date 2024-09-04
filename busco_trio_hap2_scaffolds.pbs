@@ -1,0 +1,28 @@
+#!/bin/bash
+#PBS -q condo05
+#PBS -l select=1:ncpus=32:mem=250GB
+#PBS -l walltime=168:00:00
+#PBS -W group_list=x-ccast-prj-hulke
+#PBS -N BUSCOhap2
+
+# Set directory
+cd /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiParentalIlluminaOmniCAssembly/busco_trio
+
+# Load conda environment
+source /mmfs1/home/brian.smart/miniconda3/bin/activate busco
+
+#Run busco
+busco -i /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiParentalIlluminaOmniCAssembly/yahs_scaffolding_trio_hap2/yahs.out_scaffolds_final_hap2.fa \
+      -m genome \
+      -c 32 \
+      -l embryophyta_odb10 \
+      --offline \
+      -o BUSCO_hap2_embryophta_odb10
+
+#Run busco
+busco -i /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiParentalIlluminaOmniCAssembly/yahs_scaffolding_trio_hap2/yahs.out_scaffolds_final_hap2.fa \
+       -m genome \
+       -c 32 \
+       -l eudicots_odb10 \
+       --offline \
+       -o BUSCO_hap2_eudicots_odb10

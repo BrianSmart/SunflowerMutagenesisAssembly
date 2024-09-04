@@ -1,0 +1,14 @@
+#!/bin/bash
+#PBS -q default
+#PBS -l select=1:ncpus=16:mem=64GB
+#PBS -l walltime=24:00:00
+#PBS -W group_list=x-ccast-prj-hulke
+#PBS -N gfa2fa_HiFi_OmniC_unitig
+
+cd /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/hifiasm_omnic
+
+#/mmfs1/home/brian.smart/projects/Software/gfatools/gfatools gfa2fa Sunflower_1_Hetero_Red_withOmniC.asm.hic.p_ctg.gfa > Sunflower_1_Hetero_Red_withOmniC.asm.hic.p_ctg.gfa.fasta
+#awk '/^>/ {if (seq) print seq; print; seq=""; next} {seq = seq $0} END {if (seq) print seq}' Sunflower_1_Hetero_Red_withOmniC.asm.hic.p_ctg.gfa.fasta > Sunflower_1_Hetero_Red_withOmniC.asm.hic.p_ctg.gfa_singleLine.fasta
+
+/mmfs1/home/brian.smart/projects/Software/gfatools/gfatools gfa2fa Sunflower_1_Hetero_Red_withOmniC.asm.hic.p_utg.gfa > Sunflower_1_Hetero_Red_withOmniC.asm.hic.p_utg.gfa.fasta
+awk '/^>/ {if (seq) print seq; print; seq=""; next} {seq = seq $0} END {if (seq) print seq}' Sunflower_1_Hetero_Red_withOmniC.asm.hic.p_utg.gfa.fasta > Sunflower_1_Hetero_Red_withOmniC.asm.hic.p_utg.gfa_singleLine.fasta

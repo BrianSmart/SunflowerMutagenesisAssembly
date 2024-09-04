@@ -1,0 +1,51 @@
+#!/bin/bash
+#PBS -q condo05
+#PBS -l select=1:ncpus=64:mem=502GB
+#PBS -l walltime=168:00:00
+#PBS -W group_list=x-ccast-prj-hulke
+#PBS -N MerylParents
+
+# Set the path to the Meryl executable
+MERYL="/mmfs1/home/brian.smart/projects/MutagenesisSmart/HudsonAlpha/meryl-1.4.1/bin/meryl"
+
+# Set the working directory
+cd /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiParentalIlluminaOmniCAssembly/merqury_trio
+
+# Set the input files (fastp processed)
+FASTP_DIR="/mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiParentalIlluminaOmniCAssembly/fastp_parental"
+RED_R1="${FASTP_DIR}/Sunflower_2_Homo_Red_R1_fastp.fastq.gz"
+RED_R2="${FASTP_DIR}/Sunflower_2_Homo_Red_R2_fastp.fastq.gz"
+GREEN_R1="${FASTP_DIR}/Sunflower_3_Homo_Green_R1_fastp.fastq.gz"
+GREEN_R2="${FASTP_DIR}/Sunflower_3_Homo_Green_R2_fastp.fastq.gz"
+
+# Set the output Meryl databases
+RED_MERYL="HomoRed.meryl"
+GREEN_MERYL="HomoGreen.meryl"
+
+# Set the k-mer size
+K=21
+
+# Create Meryl database for Red
+echo "Creating Meryl database for Red..."
+$MERYL count k=$K threads=30 memory=200 ${RED_R1} ${RED_R2} output ${RED_MERYL} &
+
+# Create Meryl database for Green
+echo "Creating Meryl database for Green..."
+$MERYL count k=$K threads=30 memory=200 ${GREEN_R1} ${GREEN_R2} output ${GREEN_MERYL}
+
+# Wait for both processes to finish
+wait
+
+# Check statistics for Red
+echo "Statistics for Red Meryl database:"
+$MERYL statistics ${RED_MERYL}
+
+# Check statistics for Green
+echo "Statistics for Green Meryl database:"
+$MERYL statistics ${GREEN_MERYL}
+
+echo "Meryl processing complete."
+
+# Note on k-mer size:
+# Used k=21 since data is Illumina short read. For HiFi data, k=31 is often used because:
+# "We used 31 as k-mer size, as this length has demonstrated to be sufficiently long that most k-mers are not repetitive and is short enough to be more robust to sequencing errors. For very large (haploid size > 10 Gb) and/or very repetitive genomes, larger k-mer length is recommended to increase the number of unique k-mers."

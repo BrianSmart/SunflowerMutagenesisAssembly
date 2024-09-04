@@ -1,0 +1,12 @@
+#!/bin/bash
+#PBS -q condo05
+#PBS -l select=1:ncpus=1:mem=8GB
+#PBS -l walltime=24:00:00
+#PBS -W group_list=x-ccast-prj-hulke
+
+cd /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha
+
+# Merge the two fastq.gz files made from each PacBio Revio SMRT cell received from Hudson Alpha, redirect error/output log to one log file
+zcat ./rawdata/PBmixRevio1504_2_C01_PGDK_30hours_17kbExpressCCSv32hrPE300pm_200pM_Sunflower1HeteroRed_bc2079_CCSExpressIndex/m84139_240210_220531_s3.hifi_reads.bc2079.fastq.gz ./rawdata/PBmixRevio1504_2_D01_PGDK_30hours_17kbExpressCCSv32hrPE300pm_200pM_Sunflower1HeteroRed_bc2079_CCSExpressIndex/m84139_240211_015955_s4.hifi_reads.bc2079.fastq.gz | gzip > MutagenesisPacBioLongReadsMerged.fastq.gz 2> MutagenesisPacBioLongReadsMerged_log.txt
+
+

@@ -1,0 +1,22 @@
+#!/bin/bash
+#PBS -q condo05
+#PBS -l select=1:ncpus=32:mem=250GB
+#PBS -l walltime=168:00:00
+#PBS -W group_list=x-ccast-prj-hulke
+#PBS -N funTimesWithBUSCO
+
+#download the lineage dataset first into the directory which is set in the following step 
+
+# Set directory
+cd /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiOmniCAssembly/busco_haplotypes
+ 
+# Load conda environment
+source /mmfs1/home/senta.kryzer/miniconda3/bin/activate busco_env
+ 
+#Run busco
+busco -i /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiOmniCAssembly/gfatools_omnic/Sunflower_1_Hetero_Red_withOmniC.asm.hic.hap1.p_ctg.fasta \
+      -m genome \
+      -c 64 \
+      -l /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiOmniCAssembly/busco_omnic/busco_downloads/lineages/eudicots_odb10 \
+      --offline \
+      -o eudicots_hap1_odb10

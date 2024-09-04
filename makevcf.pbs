@@ -1,0 +1,30 @@
+#!/bin/bash
+#PBS -q condo05
+#PBS -l select=1:ncpus=64:mem=500GB
+#PBS -l walltime=48:00:00
+#PBS -W group_list=x-ccast-prj-hulke
+#PBS -N vcfFromBam
+#PBS -j oe
+
+module load bcftools/1.20
+module load samtools/1.20
+
+# Change to the directory where the job was submitted
+cd $PBS_O_WORKDIR
+
+# Define file names
+REFERENCE="Hap1Hap2Chr_reference.fa"
+BAM="Hap1Hap2Chr-agp.sorted.bam"
+PILEUP_BCF="Hap1Hap2Chr-agp.mpileup.bcf"
+VCF_GZ="Hap1Hap2Chr-agp.vcf.gz"
+
+# Step 1: Generate the pileup
+bcftools mpileup -f $REFERENCE $BAM --threads 64 -Oz -o $PILEUP_BCF
+
+# Step 2: Call variants
+bcftools call -m -v --threads 64 -Oz -o $VCF_GZ $PILEUP_BCF
+
+# Step 3: Index the VCF file
+tabix -p vcf $VCF_GZ
+
+echo "Variant calling pipeline completed successfully."

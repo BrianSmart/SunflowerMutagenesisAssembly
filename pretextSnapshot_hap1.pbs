@@ -1,0 +1,13 @@
+#!/bin/bash
+#PBS -q bigmem
+#PBS -l select=1:ncpus=32:mem=250GB
+#PBS -l walltime=168:00:00
+#PBS -W group_list=x-ccast-prj-hulke
+#PBS -N CreatingContactMatrixHap1Trio
+
+cd /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiParentalIlluminaOmniCAssembly/creating_contact_matrix
+
+source /mmfs1/home/senta.kryzer/miniconda3/bin/activate pretext_snapshot_env
+
+PretextSnapshot -m map_trio_hap1_pretext \
+                -f "png" 

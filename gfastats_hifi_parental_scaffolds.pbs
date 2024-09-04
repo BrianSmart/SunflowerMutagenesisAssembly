@@ -1,0 +1,15 @@
+#!/bin/bash
+
+#PBS -q condo05
+#PBS -l select=1:ncpus=32:mem=250GB
+#PBS -l walltime=168:00:00
+#PBS -W group_list=x-ccast-prj-hulke
+#PBS -N gfastats
+
+cd /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiParentalIlluminaOmniCAssembly
+
+echo "Haplotype 1"
+/mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/gfastats/build/bin/gfastats /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiParentalIlluminaOmniCAssembly/yahs_scaffolding_trio_hap1/yahs.out_scaffolds_final_hap1.fa --threads 16 &
+
+echo "\n\n\n\n\nHaplotype 2"
+/mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/gfastats/build/bin/gfastats /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiParentalIlluminaOmniCAssembly/yahs_scaffolding_trio_hap2/yahs.out_scaffolds_final_hap2.fa --threads 16

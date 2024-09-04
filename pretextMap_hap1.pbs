@@ -1,0 +1,15 @@
+#!/bin/bash
+#PBS -q bigmem
+#PBS -l select=1:ncpus=32:mem=250GB
+#PBS -l walltime=168:00:00
+#PBS -W group_list=x-ccast-prj-hulke
+#PBS -N ContactMatrixWithPretextHap1
+
+
+cd /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiParentalIlluminaOmniCAssembly
+
+source /mmfs1/home/senta.kryzer/miniconda3/bin/activate pretextmap_env
+
+module load samtools 
+
+samtools view -h ./alignment_triobinning/mapped_trio_hap1.PT.bam | PretextMap -o map_trio_hap1_pretext --sortby nosort --mapq 10

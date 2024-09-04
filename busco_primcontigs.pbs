@@ -1,0 +1,19 @@
+#!/bin/bash
+#PBS -q condo05
+#PBS -l select=1:ncpus=64:mem=500GB
+#PBS -l walltime=168:00:00
+#PBS -W group_list=x-ccast-prj-hulke
+#PBS -N funTimesWithBUSCO
+
+# Load conda environment
+source /mmfs1/home/senta.kryzer/miniconda3/bin/activate busco_env
+
+#Load working directory
+cd /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiOmniCAssembly/gfatools_omnic
+
+#Run busco
+busco -i Sunflower_1_Hetero_Red_withOmniC.asm.hic.p_ctg.fasta \
+      -m genome \
+      -c 64 \
+      -o /mmfs1/projects/brent.hulke/MutagenesisSmart/HudsonAlpha/HifiOmniCAssembly/busco_omnic/busco_omnic_primcontigs
+      -l eudicots_odb10
